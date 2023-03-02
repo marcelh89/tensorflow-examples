@@ -51,8 +51,8 @@ else:
 
 '''Predict'''
 
-img = cv2.imread('good.jpeg')  # good example
-# img = cv2.imread('bad.jpeg')  # bad example
+#img = cv2.imread('good.jpeg')  # good example
+img = cv2.imread('bad.jpeg')  # bad example
 
 plt.imshow(img)
 plt.show()
