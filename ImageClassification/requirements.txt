@@ -1,0 +1,5 @@
+tensorflow-macos
+opencv-python~=4.7.0.72
+numpy==1.24.2
+keras
+matplotlib==3.5

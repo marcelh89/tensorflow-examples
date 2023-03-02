@@ -62,14 +62,14 @@ else:
 
 # Evaluate accuracy
 test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
-#print('\nTest accuracy:', test_acc)
+# print('\nTest accuracy:', test_acc)
 
 # Make predictions
 probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
 predictions = probability_model.predict(test_images)
-#print(np.argmax(predictions[0]))
-#print(test_labels[0])
-#print(class_names[test_labels[0]])
+# print(np.argmax(predictions[0]))
+# print(test_labels[0])
+# print(class_names[test_labels[0]])
 
 ''' Verify predictions '''
 i = 0
@@ -92,22 +92,22 @@ plt.show()
 # Color correct predictions in blue and incorrect predictions in red.
 num_rows = 5
 num_cols = 3
-num_images = num_rows*num_cols
-plt.figure(figsize=(2*2*num_cols, 2*num_rows))
+num_images = num_rows * num_cols
+plt.figure(figsize=(2 * 2 * num_cols, 2 * num_rows))
 for i in range(num_images):
-  plt.subplot(num_rows, 2*num_cols, 2*i+1)
-  plot_image(i, predictions[i], test_labels, test_images, class_names)
-  plt.subplot(num_rows, 2*num_cols, 2*i+2)
-  plot_value_array(i, predictions[i], test_labels)
+    plt.subplot(num_rows, 2 * num_cols, 2 * i + 1)
+    plot_image(i, predictions[i], test_labels, test_images, class_names)
+    plt.subplot(num_rows, 2 * num_cols, 2 * i + 2)
+    plot_value_array(i, predictions[i], test_labels)
 plt.tight_layout()
 plt.show()
 
-
 ''' Use the trained model '''
+print("-----------predict------------")
 img = test_images[1]
 print(img.shape)
 
-img = (np.expand_dims(img,0))
+img = (np.expand_dims(img, 0))
 print(img.shape)
 
 predictions_single = probability_model.predict(img)
