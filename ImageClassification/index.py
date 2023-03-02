@@ -8,6 +8,10 @@ from keras.models import load_model
 
 from utils import build_model
 
+model_name = 'imageclassifier.h5'
+model_path = os.path.join('models', model_name)
+
+
 ''' Load and prepare data '''
 
 # Load Data from filesystem
@@ -39,16 +43,17 @@ validation_data = data.skip(train_size).take(val_size)
 test_data = data.skip(train_size + val_size).take(test_size)
 
 # Load existing or Build Deep Learning Model
-if os.path.exists(os.path.join('models', 'imageclassifier.h5')):
-    model = load_model(os.path.join('models', 'imageclassifier.h5'))
+if os.path.exists(model_path):
+    model = load_model(model_path)
     # else create, compile,train and save
 else:
-    model = build_model(train_data, validation_data, test_data)
+    model = build_model(train_data, validation_data, test_data, model_path)
 
 '''Predict'''
 
-# img = cv2.imread('154006829.jpg') # good example
-img = cv2.imread('8iAb9k4aT.jpg')  # bad example
+img = cv2.imread('good.jpeg')  # good example
+# img = cv2.imread('bad.jpeg')  # bad example
+
 plt.imshow(img)
 plt.show()
 # %%
@@ -61,6 +66,6 @@ yhat = model.predict(np.expand_dims(resize / 255, 0))
 yhat
 # %%
 if yhat > 0.5:
-    print(f'Predicted class is Bad')
-else:
     print(f'Predicted class is Good')
+else:
+    print(f'Predicted class is Bad')

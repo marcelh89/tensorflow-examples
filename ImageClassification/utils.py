@@ -5,7 +5,7 @@ from keras.metrics import Precision, Recall, BinaryAccuracy
 import matplotlib.pyplot as plt
 
 
-def build_model(train, val, test):
+def build_model(train, val, test, model_path):
     model = Sequential()
     model.add(Conv2D(16, (3, 3), 1, activation='relu', input_shape=(256, 256, 3)))
     model.add(MaxPooling2D())
@@ -20,7 +20,7 @@ def build_model(train, val, test):
     model.summary()
 
     # logdir='logs'
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir='logs')
     hist = model.fit(train, epochs=20, validation_data=val, callbacks=[tensorboard_callback])
 
     # 8. Plot Performance
@@ -55,3 +55,8 @@ def build_model(train, val, test):
         acc.update_state(y, yhat)
     # %%
     print(pre.result(), re.result(), acc.result())
+
+    # save model
+    model.save(model_path, save_format='h5')
+
+    return model

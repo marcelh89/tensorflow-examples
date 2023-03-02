@@ -1,10 +1,10 @@
 ## Image classification to 0 or 1 (two classes output) 
-based on https://github.com/nicknochnack/ImageClassification
+The setup is based on https://github.com/nicknochnack/ImageClassification
 - load images from filesystem
 - prepare images (convert, scale)
 - split data to train (70%), validation(20%), test(10%)
 - create model (and save) / or load existing model
-- use the model to classify images to "happy" or "sad"
+- use the model to classify images to "good" or "bad"
 
 #### How to set up
 
