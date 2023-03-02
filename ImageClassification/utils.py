@@ -3,6 +3,41 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
 from keras.metrics import Precision, Recall, BinaryAccuracy
 import matplotlib.pyplot as plt
+import cv2
+import os
+import numpy as np
+
+
+def prepare_data():
+    # Load Data from filesystem
+    data = tf.keras.utils.image_dataset_from_directory(os.path.join('data', 'train'))
+
+    # convert train to iterator over numpy array
+    data_iterator = data.as_numpy_iterator()
+    batch = data_iterator.next()
+
+    fig, ax = plt.subplots(ncols=4, figsize=(20, 20))
+    for idx, img in enumerate(batch[0][:4]):
+        ax[idx].imshow(img.astype(int))
+        ax[idx].title.set_text(batch[1][idx])
+
+    # Scale Data
+    data = data.map(lambda x, y: (x / 255, y))
+    data.as_numpy_iterator().next()
+
+    # 5. Split Data into training, validation and test train
+    # - training train is used to train the model
+    # - validation train is used to validate the model training steps
+    # - test train should be kept independent of model creation
+    train_size = int(len(data) * .7)
+    val_size = int(len(data) * .2)
+    test_size = int(len(data) * .1)
+
+    train_data = data.take(train_size)
+    validation_data = data.skip(train_size).take(val_size)
+    test_data = data.skip(train_size + val_size).take(test_size)
+
+    return [train_data, validation_data, test_data]
 
 
 def build_model(train, val, test, model_path):
@@ -60,3 +95,41 @@ def build_model(train, val, test, model_path):
     model.save(model_path, save_format='h5')
 
     return model
+
+
+def good_or_bad(value):
+    # %%
+    if value > 0.5:
+        return 'good'
+    else:
+        return 'bad'
+
+
+def predict_single(model):
+    # img = cv2.imread(os.path.join('test', 'good.jpeg'))  # good example
+    img = cv2.imread(os.path.join('data/test', 'bad.jpeg'))  # bad example
+
+    plt.imshow(img)
+    plt.show()
+    # %%
+    resize = tf.image.resize(img, (256, 256))
+    plt.imshow(resize.numpy().astype(int))
+    plt.show()
+    # %%
+    yhat = model.predict(np.expand_dims(resize / 255, 0))
+
+
+def predict_multiple(model):
+    test_images = os.listdir("data/test")
+    print(test_images)
+
+    fig, ax = plt.subplots(ncols=2, figsize=(20, 20))
+    for idx, img_src in enumerate(test_images):
+        img = cv2.imread(os.path.join('data/test', img_src))
+        resize = tf.image.resize(img, (256, 256))
+        ax[idx].imshow(resize.numpy().astype(int))
+        prediction = model.predict(np.expand_dims(resize / 255, 0))
+        ax[idx].title.set_text(img_src + "- " + str(prediction) + " - " + good_or_bad(prediction))
+        # ax[idx].suptitle(str(prediction))
+
+    plt.show()
